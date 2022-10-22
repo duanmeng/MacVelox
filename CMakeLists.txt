@@ -15,7 +15,7 @@ endif()
 
 
 set(VELOX_ENABLE_PARQUET
-  OFF
+  ON
   CACHE BOOL "Enable Parquet support")
 add_definitions(-DPRESTO_ENABLE_PARQUET)
 
@@ -41,7 +41,7 @@ include_directories(${VELOX_ROOT})
 
 add_subdirectory(velox)
 
-if(PRESTO_ENABLE_TESTING)
+if(ENABLE_TESTING)
   include(CTest) # include after project() but before add_subdirectory()
   include_directories(velox/third_party/googletest/googletest/include)
   include_directories(veloxs/third_party/googletest/googlemock/include)

@@ -11,3 +11,7 @@ target_link_libraries(
   velox_hive_connector
   velox_memory)
 
+add_executable(mac_hello_velox HelloVelox.cpp)
+target_link_libraries(
+  mac_hello_velox
+  velox_memory)
