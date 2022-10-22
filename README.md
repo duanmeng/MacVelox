@@ -2,13 +2,11 @@
 
 ## Build Notes
 
-### macOS Intel-CPU
-
 - brew install xxhash
 - bash ./scripts/setup-macos.sh
-- mkdir build && cd build
-- cmake .. && make
+- make [release | debug]
 ```Shell
-$ ./example/mac_hello_velox
+$ ._build/release/example/mac_hello_velox
 Hello MacVelox!
 ```
+

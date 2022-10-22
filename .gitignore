@@ -3,7 +3,6 @@ CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Testing
-Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
@@ -14,6 +13,7 @@ build
 build/*
 cmake-build-debug
 third_party/googletest/*
+double-conversion
 double-conversion/*
 fmt
 fmt/*
@@ -21,3 +21,4 @@ range-v3/*
 range-v3
 re2/*
 re2
+_build
