@@ -1,0 +1,4 @@
+[submodule "velox"]
+	path = velox
+	url = git@github.com:facebookincubator/velox.git
+    branch = main

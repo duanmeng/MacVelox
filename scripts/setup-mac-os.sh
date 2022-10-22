@@ -1,0 +1,23 @@
+#!/bin/bash
+set -eufx -o pipefail
+
+export CPU_TARGET="arm64"
+# Run the velox setup script first.
+source "$(dirname "${BASH_SOURCE}")/../velox/scripts/setup-macos.sh"
+
+MACOS_DEPS="${MACOS_DEPS} bison gperf libsodium"
+
+function install_six {
+  pip3 install six
+}
+
+export PATH=$(brew --prefix bison)/bin:$PATH
+
+
+function install_macduan_deps {
+  install_velox_deps
+}
+
+install_macduan_deps
+
+echo "Finish Env Setup"
