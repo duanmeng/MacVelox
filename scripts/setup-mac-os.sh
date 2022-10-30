@@ -4,7 +4,6 @@ set -eufx -o pipefail
 git submodule sync --recursive
 git submodule update --init --recursive
 
-export CPU_TARGET="arm64"
 BASE_DIR=$(pwd)
 # Run the velox setup script first.
 source "${BASE_DIR}/velox/scripts/setup-macos.sh"

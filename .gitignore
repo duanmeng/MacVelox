@@ -22,3 +22,4 @@ range-v3
 re2/*
 re2
 _build
+cmake-build-*

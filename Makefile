@@ -9,8 +9,9 @@ NUM_THREADS ?= $(shell getconf _NPROCESSORS_CONF 2>/dev/null || echo 1)
 CPU_TARGET ?= "avx" # just a hint, velox will get the actual cpu arch on the fly
 CMAKE_PREFIX_PATH ?= "/usr/local"
 
-VELOX_ENABLE_PARQUET ?= "ON"
-VELOX_ENABLE_HDFS ?= "OFF"
+# turn off it use the arrow and parquet in external project
+VELOX_ENABLE_PARQUET ?= "OFF"
+VELOX_ENABLE_HDFS ?= "OFF" # TODO: enable it
 
 CMAKE_FLAGS := -DTREAT_WARNINGS_AS_ERRORS=${TREAT_WARNINGS_AS_ERRORS}
 CMAKE_FLAGS += -DENABLE_ALL_WARNINGS=${ENABLE_WALL}

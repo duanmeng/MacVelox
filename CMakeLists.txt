@@ -16,6 +16,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 message("Appending CMAKE_CXX_FLAGS with ${SCRIPT_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SCRIPT_CXX_FLAGS}")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
+
 if("${TREAT_WARNINGS_AS_ERRORS}")
   set(KNOWN_WARNINGS "-Wno-nullability-completeness")
 
@@ -127,6 +129,11 @@ if(ENABLE_TESTING)
   include_directories(velox/third_party/googletest/googletest/include)
   include_directories(veloxs/third_party/googletest/googlemock/include)
 endif()
+
+#
+# Install arrow related libraries by using external project
+#
+include(ArrowExternalProject)
 
 add_subdirectory(example)
 
