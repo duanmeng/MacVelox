@@ -1,10 +1,10 @@
-option(BUILD_ARROW "Build Arrow from Source" OFF)
 option(STATIC_ARROW "Build Arrow with Static Libraries" ON)
 
 set(ARROW_LIB_NAME "arrow")
 set(PARQUET_LIB_NAME "parquet")
 set(ARROW_DATASET_LIB_NAME "arrow_dataset")
 set(ARROW_SUBSTRAIT_LIB_NAME "arrow_substrait")
+
 
 set(ARROW_EP_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/arrow_ep/install")
 set(ARROW_EP_INSTALL_LIB ${ARROW_EP_INSTALL_PREFIX}/lib)
@@ -58,39 +58,64 @@ function(FIND_ARROW_LIB)
     add_dependencies(${PARQUET_LIB_NAME} COPY_LIB_${PARQUET_LIB_NAME})
 endfunction()
 
+function(ADD_ARROW_EP)
+    find_package(Thrift)
+    if(Thrift_FOUND)
+        set(THRIFT_SOURCE "SYSTEM")
+    else()
+        set(THRIFT_SOURCE "BUNDLED")
+    endif()
+
+    set(ARROW_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/arrow_ep")
+    set(ARROW_LIBDIR ${ARROW_PREFIX}/install/${CMAKE_INSTALL_LIBDIR}) # CMAKE_INSTALL_LIBDIR = lib
+
+    add_library(thrift STATIC IMPORTED GLOBAL)
+    if(NOT Thrift_FOUND)
+        set(THRIFT_ROOT ${ARROW_PREFIX}/src/arrow_ep-build/thrift_ep-install)
+        if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+            set(THRIFT_LIB ${THRIFT_ROOT}/lib/libthriftd.a)
+        else()
+            set(THRIFT_LIB ${THRIFT_ROOT}/lib/libthrift.a)
+        endif()
+
+        file(MAKE_DIRECTORY ${THRIFT_ROOT}/include)
+        set(THRIFT_INCLUDE_DIR ${THRIFT_ROOT}/include)
+    endif()
+
+    set_property(TARGET thrift PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${THRIFT_INCLUDE_DIR})
+    set_property(TARGET thrift PROPERTY IMPORTED_LOCATION ${THRIFT_LIB})
+    message(STATUS "Thrift use ${THRIFT_SOURCE} include dir is ${THRIFT_INCLUDE_DIR} lib path is ${THRIFT_LIB}")
+
+    set(ARROW_CMAKE_ARGS
+            -DARROW_PARQUET=ON
+            -DARROW_WITH_LZ4=ON
+            -DARROW_WITH_SNAPPY=ON
+            -DARROW_WITH_ZLIB=ON
+            -DARROW_WITH_ZSTD=ON
+            -DARROW_JEMALLOC=OFF
+            -DARROW_SIMD_LEVEL=NONE
+            -DARROW_RUNTIME_SIMD_LEVEL=NONE
+            -DARROW_WITH_UTF8PROC=OFF
+            -DCMAKE_INSTALL_PREFIX=${ARROW_PREFIX}/install
+            -DARROW_BUILD_STATIC=ON
+            -DThrift_SOURCE=${THRIFT_SOURCE}
+            -DARROW_SUBSTRAIT=ON
+            -DARROW_COMPUTE=ON
+            -DARROW_CSV=ON
+            -DARROW_DATASET=ON
+            -DARROW_JSON=ON)
+    ExternalProject_Add(
+            arrow_external_project
+            PREFIX ${ARROW_PREFIX}
+            URL "https://dlcdn.apache.org/arrow/arrow-8.0.0/apache-arrow-8.0.0.tar.gz"
+            SOURCE_SUBDIR cpp
+            CMAKE_ARGS ${ARROW_CMAKE_ARGS}
+            BUILD_BYPRODUCTS ${ARROW_LIBDIR}/libarrow.a ${ARROW_LIBDIR}/libparquet.a
+            ${THRIFT_LIB})
+endfunction()
+
 include(ExternalProject)
 
-set(ARROW_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/arrow_ep")
-set(ARROW_CMAKE_ARGS
-        -DARROW_PARQUET=ON
-        -DARROW_WITH_LZ4=ON
-        -DARROW_WITH_SNAPPY=ON
-        -DARROW_WITH_ZLIB=ON
-        -DARROW_WITH_ZSTD=ON
-        -DARROW_JEMALLOC=OFF
-        -DARROW_SIMD_LEVEL=NONE
-        -DARROW_RUNTIME_SIMD_LEVEL=NONE
-        -DARROW_WITH_UTF8PROC=OFF
-        -DCMAKE_INSTALL_PREFIX=${ARROW_PREFIX}/install
-        -DARROW_BUILD_STATIC=ON
-        -DThrift_SOURCE=${THRIFT_SOURCE}
-        -DARROW_SUBSTRAIT=ON
-        -DARROW_COMPUTE=ON
-        -DARROW_CSV=ON
-        -DARROW_DATASET=ON
-        -DARROW_JSON=ON
-        )
-set(ARROW_LIBDIR ${ARROW_PREFIX}/install/${CMAKE_INSTALL_LIBDIR}) # CMAKE_INSTALL_LIBDIR = lib
-message(STATUS "MACDUAN ARROW_LIBDIR is ${ARROW_LIBDIR}")
-
-ExternalProject_Add(
-        arrow_external_project
-        PREFIX ${ARROW_PREFIX}
-        URL "https://dlcdn.apache.org/arrow/arrow-8.0.0/apache-arrow-8.0.0.tar.gz"
-        SOURCE_SUBDIR cpp
-        CMAKE_ARGS ${ARROW_CMAKE_ARGS}
-        BUILD_BYPRODUCTS ${ARROW_LIBDIR}/libarrow.a ${ARROW_LIBDIR}/libparquet.a
-        ${THRIFT_LIB})
-
+add_arrow_ep()
 find_arrow_lib()
 message(STATUS "find_arrow_lib finished")

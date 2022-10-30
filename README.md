@@ -17,7 +17,7 @@
 
 ## Build Notes
 
-- bash ./scripts/setup-macos.sh
+- bash ./scripts/setup-mac-os.sh
 - make [release | debug]
 
 ## Examples
