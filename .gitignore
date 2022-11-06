@@ -23,3 +23,4 @@ re2/*
 re2
 _build
 cmake-build-*
+*.log

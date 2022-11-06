@@ -22,6 +22,8 @@ CMAKE_FLAGS += -DVELOX_ENABLE_HDFS=$(VELOX_ENABLE_HDFS)
 
 SHELL := /bin/bash
 
+MAKEFILE_DIR := $(shell pwd)
+
 # Use Ninja if available. If Ninja is used, pass through parallelism control flags.
 USE_NINJA ?= 1
 ifeq ($(USE_NINJA), 1)
@@ -38,7 +40,7 @@ endif
 
 all: release			#: Build the release version
 
-clean:					#: Delete all build artifacts
+clean: cleansub	#: Delete all build artifacts
 	rm -rf $(BUILD_BASE_DIR)
 
 velox-submodule:		#: Check out code for velox submodule
@@ -47,10 +49,18 @@ velox-submodule:		#: Check out code for velox submodule
 
 submodules: velox-submodule
 
-cmake: submodules		#: Use CMake to create a Makefile build system
+cleansub:
+	sed -i '' 's/PROJECT_SOURCE_DIR/CMAKE_SOURCE_DIR/g' $(MAKEFILE_DIR)/velox/velox/substrait/CMakeLists.txt
+
+cmake:	#: Use CMake to create a Makefile build system
+	# TODO: Velox's substrait use CMAKE_SOURCE_DIR as the proto_path ($VeloxProjectDir/velox),
+	# it works only when it is the top-level project not when it is used as a sub-project,
+	# in which the proto_path would have one more layer ($OtherProjectDir/velox/velox).
+	# This is just a workaround, and we should fix it in the Velox project itself.
+	sed -i '' 's/CMAKE_SOURCE_DIR/PROJECT_SOURCE_DIR/g' $(MAKEFILE_DIR)/velox/velox/substrait/CMakeLists.txt
 	cmake -B "$(BUILD_BASE_DIR)/$(BUILD_DIR)" $(FORCE_COLOR) $(CMAKE_FLAGS)
 
-build:					#: Build the software based in BUILD_DIR and BUILD_TYPE variables
+build:	#: Build the software based in BUILD_DIR and BUILD_TYPE variables
 	cmake --build $(BUILD_BASE_DIR)/$(BUILD_DIR) -j $(NUM_THREADS)
 
 debug:					#: Build with debugging symbols
@@ -61,8 +71,10 @@ release:				#: Build the release version
 	$(MAKE) cmake BUILD_DIR=release BUILD_TYPE=Release && \
 	$(MAKE) build BUILD_DIR=release
 
+test:
+	echo "Do Nothing"
+
 help:					#: Show the help messages
 	@cat $(firstword $(MAKEFILE_LIST)) | \
 	awk '/^[-a-z]+:/' | \
 	awk -F: '{ printf("%-20s   %s\n", $$1, $$NF) }'
-

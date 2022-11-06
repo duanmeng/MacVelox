@@ -62,6 +62,7 @@ set(VELOX_BUILD_TEST_UTILS
     CACHE BOOL "Enable Velox test utils")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(VELOX_ENABLE_SUBSTRAIT ON CACHE BOOL "Enable Velox Substrait")
 
 set(Boost_USE_MULTITHREADED TRUE)
 find_package(
@@ -136,4 +137,5 @@ endif()
 include(ArrowExternalProject)
 
 add_subdirectory(example)
+add_subdirectory(src)
 
