@@ -110,9 +110,7 @@ endif()
 include_directories(SYSTEM ${FOLLY_INCLUDE_DIRS})
 
 # Include third party header files
-
 find_package(Protobuf REQUIRED)
-
 find_path(OPT_OPENSSL_DIR NAMES opt/openssl)
 set(OPENSSL_ROOT_DIR "${OPT_OPENSSL_DIR}/opt/openssl")
 find_package(OpenSSL REQUIRED)
