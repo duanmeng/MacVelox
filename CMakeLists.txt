@@ -120,6 +120,7 @@ include_directories(.)
 include_directories(velox)
 include_directories(velox/velox/external/xxhash)
 include_directories(${VELOX_ROOT})
+include_directories(${CMAKE_BINARY_DIR}) # for dwio/dwrf
 
 add_subdirectory(velox)
 

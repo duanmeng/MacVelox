@@ -7,11 +7,6 @@ set(VELOX_BACKEND_SRC
         execution/exec_backend.cpp)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(utils)
-
-message(STATUS "MACDUAN Protobuf_USE_STATIC_LIBS - ${Protobuf_USE_STATIC_LIBS}")
-message(STATUS "MACDUAN Protobuf_LIBRARIES - ${Protobuf_LIBRARIES}")
-message(STATUS "MACDUAN Protobuf_LIBRARIES - ${Protobuf_LIBRARIES}")
 
 include_directories(${Protobuf_INCLUDE_DIRS})
 

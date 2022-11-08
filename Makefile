@@ -40,24 +40,17 @@ endif
 
 all: release			#: Build the release version
 
-clean: cleansub	#: Delete all build artifacts
+clean: #: Delete all build artifacts
 	rm -rf $(BUILD_BASE_DIR)
 
-velox-submodule:		#: Check out code for velox submodule
+submodules:
 	git submodule sync --recursive
 	git submodule update --init --recursive
 
-submodules: velox-submodule
-
-cleansub:
-	sed -i '' 's/PROJECT_SOURCE_DIR/CMAKE_SOURCE_DIR/g' $(MAKEFILE_DIR)/velox/velox/substrait/CMakeLists.txt
+update-submodules: submodules  #: Check out code for velox submodule
+	git submodule update --remote --merge
 
 cmake:	#: Use CMake to create a Makefile build system
-	# TODO: Velox's substrait use CMAKE_SOURCE_DIR as the proto_path ($VeloxProjectDir/velox),
-	# it works only when it is the top-level project not when it is used as a sub-project,
-	# in which the proto_path would have one more layer ($OtherProjectDir/velox/velox).
-	# This is just a workaround, and we should fix it in the Velox project itself.
-	sed -i '' 's/CMAKE_SOURCE_DIR/PROJECT_SOURCE_DIR/g' $(MAKEFILE_DIR)/velox/velox/substrait/CMakeLists.txt
 	cmake -B "$(BUILD_BASE_DIR)/$(BUILD_DIR)" $(FORCE_COLOR) $(CMAKE_FLAGS)
 
 build:	#: Build the software based in BUILD_DIR and BUILD_TYPE variables
