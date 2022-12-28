@@ -1,5 +1,4 @@
-#ifndef MACVELOX_EXEC_BACKEND_H
-#define MACVELOX_EXEC_BACKEND_H
+#pragma once
 
 #include <unordered_map>
 
@@ -326,5 +325,3 @@ void SetBackendFactory(
 std::shared_ptr<ExecBackendBase> CreateBackend();
 
 }
-
-#endif //MACVELOX_EXEC_BACKEND_H

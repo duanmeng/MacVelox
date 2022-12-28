@@ -1,9 +1,6 @@
-//
-// Created by macduan on 2022/11/5.
-//
+#pragma once
 
-#ifndef MACVELOX_VELOX_MEMORY_POOL_H
-#define MACVELOX_VELOX_MEMORY_POOL_H
+#include "allocator.h"
 
 #include "velox/common/memory/Memory.h"
 #include "substrait/plan.pb.h"
@@ -15,9 +12,10 @@ namespace petrel::memory {
 constexpr uint16_t kNoAlignment = facebook::velox::memory::kNoAlignment;
 constexpr int64_t kMaxMemory = facebook::velox::memory::kMaxMemory;
 
-class velox_memory_pool {
-};
+std::shared_ptr<facebook::velox::memory::MemoryPool> AsWrappedVeloxMemoryPool(
+        petrel::memory::MemoryAllocator* allocator);
+
+std::shared_ptr<facebook::velox::memory::MemoryPool>
+GetDefaultWrappedVeloxMemoryPool();
 
 } // namespace petrel::memory
-
-#endif //MACVELOX_VELOX_MEMORY_POOL_H

@@ -1,5 +1,4 @@
-#ifndef MACVELOX_EXCEPTION_H
-#define MACVELOX_EXCEPTION_H
+#pragma once
 
 #include <stdexcept>
 #include <string>
@@ -24,5 +23,3 @@ inline void throw_exception_if_not_ok(arrow::Status status) {
 }
 
 } // namespace petrel::utils
-
-#endif //MACVELOX_EXCEPTION_H

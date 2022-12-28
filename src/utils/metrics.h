@@ -1,10 +1,3 @@
-//
-// Created by macduan on 2022/11/7.
-//
-
-#ifndef MACVELOX_METRICS_H
-#define MACVELOX_METRICS_H
-
 #pragma once
 
 struct Metrics {
@@ -65,5 +58,3 @@ struct Metrics {
         delete[] numMemoryAllocations;
     }
 };
-
-#endif //MACVELOX_METRICS_H

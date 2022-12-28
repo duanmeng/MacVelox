@@ -1,17 +1,15 @@
-#ifndef MACVELOX_ALLOCATOR_H
-#define MACVELOX_ALLOCATOR_H
-
+#pragma once
 
 #include "arrow/memory_pool.h"
 #include "arrow/util/memory.h"
-
-namespace petrel::memory {
 
 #include <atomic>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <utility>
+
+namespace petrel::memory {
 
 class MemoryAllocator {
 public:
@@ -125,5 +123,3 @@ private:
 [[maybe_unused]] std::shared_ptr<MemoryAllocator> DefaultMemoryAllocator();
 
 } // namespace petrel::memory
-
-#endif //MACVELOX_ALLOCATOR_H

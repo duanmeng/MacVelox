@@ -1,5 +1,4 @@
-#ifndef MACVELOX_COLUMNAR_BATCH_H
-#define MACVELOX_COLUMNAR_BATCH_H
+#pragma once
 
 #include <memory>
 #include <string>
@@ -62,5 +61,3 @@ private:
 };
 
 } // petrel::memory
-
-#endif //MACVELOX_COLUMNAR_BATCH_H

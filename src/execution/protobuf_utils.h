@@ -1,6 +1,4 @@
-#ifndef MACVELOX_PROTOBUF_UTILS_H
-#define MACVELOX_PROTOBUF_UTILS_H
-
+#pragma once
 
 #include <cstdint>
 #include <google/protobuf/message.h>
@@ -12,5 +10,3 @@ bool ParseProtobuf(
         int bufLen,
         google::protobuf::Message* msg);
 }
-
-#endif //MACVELOX_PROTOBUF_UTILS_H
