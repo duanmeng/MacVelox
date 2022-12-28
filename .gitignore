@@ -24,3 +24,4 @@ re2
 _build
 cmake-build-*
 *.log
+scripts/__pycache__

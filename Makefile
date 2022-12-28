@@ -56,6 +56,13 @@ cmake:	#: Use CMake to create a Makefile build system
 build:	#: Build the software based in BUILD_DIR and BUILD_TYPE variables
 	cmake --build $(BUILD_BASE_DIR)/$(BUILD_DIR) -j $(NUM_THREADS)
 
+format-fix: 			#: Fix formatting issues in the main branch
+	scripts/check.py format main --fix
+
+format-check: 			#: Check for formatting issues on the main branch
+	clang-format --version
+	scripts/check.py format main
+
 debug:					#: Build with debugging symbols
 	$(MAKE) cmake BUILD_DIR=debug BUILD_TYPE=Debug
 	$(MAKE) build BUILD_DIR=debug
