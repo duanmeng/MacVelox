@@ -26,35 +26,35 @@
 
 ### Hello Velox
 ```Shell
-$ ./_build/release/example/mac_hello_velox
-Hello Velox!
+$ ./_build/release/src/example/mac_hello_velox
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I20230319 22:31:05.806710 3735465 HelloVelox.cpp:165] Hello Velox!
 This is copied from example code of velox code base
 https://github.com/facebookincubator/velox/blob/main/velox/examples/OpaqueType.cpp
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I20221030 15:28:32.737313 7982905 HelloVelox.cpp:280] Executing simple opaque function:
-I20221030 15:28:32.738217 7982905 HelloVelox.cpp:288] Found UserDefinedOutput: [0: zero]
-I20221030 15:28:32.738234 7982905 HelloVelox.cpp:288] Found UserDefinedOutput: [1: one]
-I20221030 15:28:32.738245 7982905 HelloVelox.cpp:288] Found UserDefinedOutput: [2: two]
-I20221030 15:28:32.738253 7982905 HelloVelox.cpp:288] Found UserDefinedOutput: [3: three]
-I20221030 15:28:32.738262 7982905 HelloVelox.cpp:288] Found UserDefinedOutput: [4: four]
-I20221030 15:28:32.738271 7982905 HelloVelox.cpp:292] Executing vectorized opaque function:
-I20221030 15:28:32.738315 7982905 HelloVelox.cpp:300] Found UserDefinedOutput: [0: zero]
-I20221030 15:28:32.738327 7982905 HelloVelox.cpp:300] Found UserDefinedOutput: [1: one]
-I20221030 15:28:32.738337 7982905 HelloVelox.cpp:300] Found UserDefinedOutput: [2: two]
-I20221030 15:28:32.738345 7982905 HelloVelox.cpp:300] Found UserDefinedOutput: [3: three]
-I20221030 15:28:32.738354 7982905 HelloVelox.cpp:300] Found UserDefinedOutput: [4: four]
-I20221030 15:28:32.738363 7982905 HelloVelox.cpp:306] Executing vectorized opaque function (over constant opaque col):
-I20221030 15:28:32.738384 7982905 HelloVelox.cpp:315] Found UserDefinedOutput: [0: zero]
-I20221030 15:28:32.738394 7982905 HelloVelox.cpp:315] Found UserDefinedOutput: [1: one]
-I20221030 15:28:32.738401 7982905 HelloVelox.cpp:315] Found UserDefinedOutput: [2: two]
-I20221030 15:28:32.738410 7982905 HelloVelox.cpp:315] Found UserDefinedOutput: [3: three]
-I20221030 15:28:32.738418 7982905 HelloVelox.cpp:315] Found UserDefinedOutput: [4: four]
-I20221030 15:28:32.738426 7982905 HelloVelox.cpp:320] Number of instances of OpaqueState: 1
+I20230319 22:31:05.807632 3735465 HelloVelox.cpp:244] Executing simple opaque function:
+I20230319 22:31:05.807869 3735465 HelloVelox.cpp:252] Found UserDefinedOutput: [0: zero]
+I20230319 22:31:05.807879 3735465 HelloVelox.cpp:252] Found UserDefinedOutput: [1: one]
+I20230319 22:31:05.807884 3735465 HelloVelox.cpp:252] Found UserDefinedOutput: [2: two]
+I20230319 22:31:05.807888 3735465 HelloVelox.cpp:252] Found UserDefinedOutput: [3: three]
+I20230319 22:31:05.807893 3735465 HelloVelox.cpp:252] Found UserDefinedOutput: [4: four]
+I20230319 22:31:05.807898 3735465 HelloVelox.cpp:256] Executing vectorized opaque function:
+I20230319 22:31:05.807924 3735465 HelloVelox.cpp:264] Found UserDefinedOutput: [0: zero]
+I20230319 22:31:05.807929 3735465 HelloVelox.cpp:264] Found UserDefinedOutput: [1: one]
+I20230319 22:31:05.807932 3735465 HelloVelox.cpp:264] Found UserDefinedOutput: [2: two]
+I20230319 22:31:05.807936 3735465 HelloVelox.cpp:264] Found UserDefinedOutput: [3: three]
+I20230319 22:31:05.807940 3735465 HelloVelox.cpp:264] Found UserDefinedOutput: [4: four]
+I20230319 22:31:05.807945 3735465 HelloVelox.cpp:270] Executing vectorized opaque function (over constant opaque col):
+I20230319 22:31:05.807967 3735465 HelloVelox.cpp:279] Found UserDefinedOutput: [0: zero]
+I20230319 22:31:05.807972 3735465 HelloVelox.cpp:279] Found UserDefinedOutput: [1: one]
+I20230319 22:31:05.807977 3735465 HelloVelox.cpp:279] Found UserDefinedOutput: [2: two]
+I20230319 22:31:05.807982 3735465 HelloVelox.cpp:279] Found UserDefinedOutput: [3: three]
+I20230319 22:31:05.807986 3735465 HelloVelox.cpp:279] Found UserDefinedOutput: [4: four]
+I20230319 22:31:05.807991 3735465 HelloVelox.cpp:284] Number of instances of OpaqueState: 1
 ```
 
 ### Hello Arrow
-```Sheel
-$ ./_build/release/example/mac_hello_arrow
+```Shell
+$ ./_build/release/src/example/mac_hello_arrow
 Hello Arrow arrow::StatusCode::SerializationError string is Serialization error
 Hello arrow/parquet magic number 3735928495 BlockSplitBloomFilter hash value is 1278943838006941606 MurmurHash3 value is 1278943838006941606
 ```

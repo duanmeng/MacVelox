@@ -62,6 +62,103 @@ set(VELOX_BUILD_TEST_UTILS
     ON
     CACHE BOOL "Enable Velox test utils")
 
+# MacOSX enables two-level namespace by default:
+# http://mirror.informatimago.com/next/developer.apple.com/releasenotes/DeveloperTools/TwoLevelNamespaces.html
+# Enables -flat_namespace so type_info can be deudplicated across .so boundaries
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  add_link_options("-Wl,-flat_namespace")
+endif()
+
+if(UNIX AND NOT APPLE)
+  # codegen linker flags, -export-dynamic for rtti
+  add_link_options("-Wl,-export-dynamic")
+endif()
+
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm64" AND ${CMAKE_SYSTEM_NAME} MATCHES
+                                                 "Darwin")
+  set(ON_APPLE_M1 True)
+endif()
+
+# Required so velox code can be used in a dynamic library
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+execute_process(
+  COMMAND
+    bash -c
+    "( source ${CMAKE_CURRENT_SOURCE_DIR}/scripts/setup-helper-functions.sh && echo -n $(get_cxx_flags $ENV{CPU_TARGET}))"
+  OUTPUT_VARIABLE SCRIPT_CXX_FLAGS
+  RESULT_VARIABLE COMMAND_STATUS)
+
+if(COMMAND_STATUS EQUAL "1")
+  message(FATAL_ERROR "Unable to determine compiler flags!")
+endif()
+message("Setting CMAKE_CXX_FLAGS=${SCRIPT_CXX_FLAGS}")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SCRIPT_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D USE_VELOX_COMMON_BASE")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D HAS_UNCAUGHT_EXCEPTIONS")
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char")
+endif()
+
+# Under Ninja, we are able to designate certain targets large enough to require
+# restricted parallelism.
+if("${MAX_HIGH_MEM_JOBS}")
+  set_property(GLOBAL PROPERTY JOB_POOLS
+                               "high_memory_pool=${MAX_HIGH_MEM_JOBS}")
+else()
+  set_property(GLOBAL PROPERTY JOB_POOLS high_memory_pool=1000)
+endif()
+
+if("${MAX_LINK_JOBS}")
+  set_property(GLOBAL APPEND PROPERTY JOB_POOLS
+                                      "link_job_pool=${MAX_LINK_JOBS}")
+  set(CMAKE_JOB_POOL_LINK link_job_pool)
+endif()
+
+if("${TREAT_WARNINGS_AS_ERRORS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+endif()
+
+if("${ENABLE_ALL_WARNINGS}")
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(KNOWN_COMPILER_SPECIFIC_WARNINGS
+        "-Wno-range-loop-analysis \
+         -Wno-mismatched-tags \
+         -Wno-nullability-completeness")
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(KNOWN_COMPILER_SPECIFIC_WARNINGS
+        "-Wno-implicit-fallthrough \
+         -Wno-empty-body \
+         -Wno-class-memaccess \
+         -Wno-comment \
+         -Wno-int-in-bool-context \
+         -Wno-redundant-move \
+         -Wno-array-bounds \
+         -Wno-maybe-uninitialized \
+         -Wno-unused-result \
+         -Wno-format-overflow \
+         -Wno-strict-aliasing \
+         -Wno-type-limits \
+         -Wno-stringop-overflow")
+  endif()
+
+  set(KNOWN_WARNINGS
+      "-Wno-unused \
+       -Wno-unused-parameter \
+       -Wno-sign-compare \
+       -Wno-ignored-qualifiers \
+       ${KNOWN_COMPILER_SPECIFIC_WARNINGS}")
+
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra ${KNOWN_WARNINGS}")
+endif()
+
+message("FINAL CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(VELOX_ENABLE_SUBSTRAIT
     ON
@@ -138,5 +235,4 @@ endif()
 #
 include(ArrowExternalProject)
 
-add_subdirectory(example)
-# add_subdirectory(src)
+add_subdirectory(src)

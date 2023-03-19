@@ -20,8 +20,6 @@ CMAKE_FLAGS += -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 CMAKE_FLAGS += -DVELOX_ENABLE_PARQUET=$(VELOX_ENABLE_PARQUET)
 CMAKE_FLAGS += -DVELOX_ENABLE_HDFS=$(VELOX_ENABLE_HDFS)
 
-SHELL := /bin/bash
-
 MAKEFILE_DIR := $(shell pwd)
 
 # Use Ninja if available. If Ninja is used, pass through parallelism control flags.

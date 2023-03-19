@@ -1,0 +1,2 @@
+add_executable(buffers_flat_vectors BuffersAndFlatVectors.cpp)
+target_link_libraries(buffers_flat_vectors velox_buffer velox_vector)
