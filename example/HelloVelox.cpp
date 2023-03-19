@@ -1,6 +1,17 @@
 /*
- * Copy from example code of velox code base
- * https://github.com/facebookincubator/velox/blob/main/velox/examples/OpaqueType.cpp
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 #include "velox/common/memory/Memory.h"
@@ -168,55 +179,22 @@ VELOX_DECLARE_VECTOR_FUNCTION(
         MapResolverVectorFunction::signatures(),
         std::make_unique<MapResolverVectorFunction>());
 
-// Helper function that creates a simple expression plan and executes it against
-// rowVector.
-//
-// Don't spend too much time trying to follow this code, If you would like a
-// more detailed description of this process, please check
-// `velox/examples/ExpressionEval.cpp` instead.
-VectorPtr evaluate(
-        const std::string& functionName,
-        const std::string& argName1,
-        const std::string& argName2,
-        core::ExecCtx& execCtx,
-        RowVectorPtr rowVector) {
-    std::vector<VectorPtr> result{nullptr};
-    SelectivityVector rows{rowVector->size()};
-
-    auto rowType = rowVector->type()->as<TypeKind::ROW>();
-
-    auto fieldAccessExprNode1 = std::make_shared<core::FieldAccessTypedExpr>(
-            rowType.findChild(argName1), argName1);
-    auto fieldAccessExprNode2 = std::make_shared<core::FieldAccessTypedExpr>(
-            rowType.findChild(argName2), argName2);
-
-    auto exprPlan = std::make_shared<core::CallTypedExpr>(
-            OPAQUE<UserDefinedOutput>(),
-            std::vector<core::TypedExprPtr>{
-                    fieldAccessExprNode1, fieldAccessExprNode2},
-            functionName);
-
-    exec::ExprSet exprSet({exprPlan}, &execCtx);
-    exec::EvalCtx evalCtx(&execCtx, &exprSet, rowVector.get());
-    exprSet.eval(rows, evalCtx, result);
-    return result.front();
-}
-
 int main(int argc, char** argv) {
-    std::cout << "Hello Velox! \nThis is copied from example code of velox code base"
-        << "\nhttps://github.com/facebookincubator/velox/blob/main/velox/examples/OpaqueType.cpp\n";
+    std::cout
+        << "Hello Velox! \nThis is copied from example code of velox code base"
+        << "\nhttps://github.com/facebookincubator/velox/blob/main/velox/"
+           "examples/OpaqueType.cpp\n";
     // Registering both simple and vectorized functions.
-    registerFunction<
-    MapResolverSimpleFunction,
-            std::shared_ptr<UserDefinedOutput>,
-            std::shared_ptr<UserDefinedMap>,
-            int64_t>({"map_resolver_simple"});
+    registerFunction<MapResolverSimpleFunction,
+                     std::shared_ptr<UserDefinedOutput>,
+                     std::shared_ptr<UserDefinedMap>, int64_t>(
+        {"map_resolver_simple"});
     VELOX_REGISTER_VECTOR_FUNCTION(
             udf_map_resolver_vector, "map_resolver_vector");
 
     // Create memory pool and other query-related structures.
-    auto queryCtx = core::QueryCtx::createForTest();
-    auto pool = memory::getDefaultScopedMemoryPool();
+    auto queryCtx = std::make_shared<core::QueryCtx>();
+    auto pool = memory::getDefaultMemoryPool();
     core::ExecCtx execCtx{pool.get(), queryCtx.get()};
 
     // Next, we need to generate an input batch of data (rowVector). We create a
@@ -253,12 +231,13 @@ int main(int argc, char** argv) {
     }
 
     // Create vector #2. Just a constant to the shared_ptr we created above.
-    auto vector2 = BaseVector::createConstant(
-            variant::opaque(opaqueObj), vectorSize, execCtx.pool());
+    auto vector2 = BaseVector::createConstant(OPAQUE<UserDefinedMap>(),
+                                              variant::opaque(opaqueObj),
+                                              vectorSize, execCtx.pool());
 
     // Create vector #3. The monotinically increasing flatVector<bigint>.
-    auto vector3 = std::dynamic_pointer_cast<FlatVector<int64_t>>(
-            BaseVector::create(BIGINT(), vectorSize, execCtx.pool()));
+    auto vector3 = BaseVector::create<FlatVector<int64_t>>(BIGINT(), vectorSize,
+                                                           execCtx.pool());
     auto rawValues = vector3->mutableRawValues();
     std::iota(rawValues, rawValues + vectorSize, 0); // 0, 1, 2, 3, ...
 
@@ -320,4 +299,35 @@ int main(int argc, char** argv) {
     LOG(INFO) << "Number of instances of OpaqueState: "
               << UserDefinedMap::numInstances;
     return 0;
+}
+
+// Helper function that creates a simple expression plan and executes it against
+// rowVector.
+//
+// Don't spend too much time trying to follow this code, If you would like a
+// more detailed description of this process, please check
+// `velox/examples/ExpressionEval.cpp` instead.
+VectorPtr evaluate(const std::string &functionName, const std::string &argName1,
+                   const std::string &argName2, core::ExecCtx &execCtx,
+                   RowVectorPtr rowVector) {
+    std::vector<VectorPtr> result{nullptr};
+    SelectivityVector rows{rowVector->size()};
+
+    auto rowType = rowVector->type()->as<TypeKind::ROW>();
+
+    auto fieldAccessExprNode1 = std::make_shared<core::FieldAccessTypedExpr>(
+        rowType.findChild(argName1), argName1);
+    auto fieldAccessExprNode2 = std::make_shared<core::FieldAccessTypedExpr>(
+        rowType.findChild(argName2), argName2);
+
+    auto exprPlan = std::make_shared<core::CallTypedExpr>(
+        OPAQUE<UserDefinedOutput>(),
+        std::vector<core::TypedExprPtr>{fieldAccessExprNode1,
+                                        fieldAccessExprNode2},
+        functionName);
+
+    exec::ExprSet exprSet({exprPlan}, &execCtx);
+    exec::EvalCtx evalCtx(&execCtx, &exprSet, rowVector.get());
+    exprSet.eval(rows, evalCtx, result);
+    return result.front();
 }

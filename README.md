@@ -17,6 +17,8 @@
 
 ## Build Notes
 
+- git clone --recursive git@github.com:duanmeng/MacVelox.git
+- cd MacVelox
 - bash ./scripts/setup-mac-os.sh
 - make [release | debug]
 

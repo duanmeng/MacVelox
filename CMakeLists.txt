@@ -16,7 +16,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 message("Appending CMAKE_CXX_FLAGS with ${SCRIPT_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SCRIPT_CXX_FLAGS}")
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules"
+                      ${CMAKE_MODULE_PATH})
 
 if("${TREAT_WARNINGS_AS_ERRORS}")
   set(KNOWN_WARNINGS "-Wno-nullability-completeness")
@@ -32,16 +33,16 @@ endif()
 if(VELOX_ENABLE_PARQUET)
   message(INFO " velox parquet enabled")
   set(VELOX_ENABLE_PARQUET
-    ON
-    CACHE BOOL "Enable Parquet support")
+      ON
+      CACHE BOOL "Enable Parquet support")
   add_definitions(-DVELOX_ENABLE_PARQUET)
 endif()
 
 if(VELOX_ENABLE_HDFS)
   message(INFO " velox hdfs enabled")
   set(VELOX_ENABLE_HDFS
-    OFF
-    CACHE BOOL "Build HDFS Connector")
+      OFF
+      CACHE BOOL "Build HDFS Connector")
   add_definitions(-DVELOX_ENABLE_HDFS)
 endif()
 
@@ -62,7 +63,9 @@ set(VELOX_BUILD_TEST_UTILS
     CACHE BOOL "Enable Velox test utils")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(VELOX_ENABLE_SUBSTRAIT ON CACHE BOOL "Enable Velox Substrait")
+set(VELOX_ENABLE_SUBSTRAIT
+    ON
+    CACHE BOOL "Enable Velox Substrait")
 
 set(Boost_USE_MULTITHREADED TRUE)
 find_package(
@@ -136,5 +139,4 @@ endif()
 include(ArrowExternalProject)
 
 add_subdirectory(example)
-add_subdirectory(src)
-
+# add_subdirectory(src)
