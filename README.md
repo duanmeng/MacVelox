@@ -52,6 +52,38 @@ I20230319 22:31:05.807986 3735465 HelloVelox.cpp:279] Found UserDefinedOutput: [
 I20230319 22:31:05.807991 3735465 HelloVelox.cpp:284] Number of instances of OpaqueState: 1
 ```
 
+### Hello XSIMD
+```Shell
+$ ./_build/release/src/example/mac_hello_xsimd
+(2, 3)
+Get simd size automatically.
+Get simd info of int8_t
+arch_type N5xsimd6neon64E
+simd_type_size 16
+register_type 16__simd128_int8_t
+simd_register N5xsimd5types13simd_registerIaNS_6neon64EEE
+Get simd info of int16_t
+arch_type N5xsimd6neon64E
+simd_type_size 8
+register_type 17__simd128_int16_t
+simd_register N5xsimd5types13simd_registerIsNS_6neon64EEE
+Get simd info of int32_t
+arch_type N5xsimd6neon64E
+simd_type_size 4
+register_type 17__simd128_int32_t
+simd_register N5xsimd5types13simd_registerIiNS_6neon64EEE
+Get simd info of int64_t
+arch_type N5xsimd6neon64E
+simd_type_size 2
+register_type 17__simd128_int64_t
+simd_register N5xsimd5types13simd_registerIxNS_6neon64EEE
+Get simd info of double
+arch_type N5xsimd6neon64E
+simd_type_size 2
+register_type 19__simd128_float64_t
+simd_register N5xsimd5types13simd_registerIdNS_6neon64EEE
+```
+
 ### Hello Arrow
 ```Shell
 $ ./_build/release/src/example/mac_hello_arrow

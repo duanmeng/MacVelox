@@ -16,8 +16,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 message("Appending CMAKE_CXX_FLAGS with ${SCRIPT_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SCRIPT_CXX_FLAGS}")
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules"
-                      ${CMAKE_MODULE_PATH})
+list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+list(PREPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
+include(ResolveDependency)
 
 if("${TREAT_WARNINGS_AS_ERRORS}")
   set(KNOWN_WARNINGS "-Wno-nullability-completeness")
@@ -234,5 +235,8 @@ endif()
 # Install arrow related libraries by using external project
 #
 include(ArrowExternalProject)
+
+set(xsimd_SOURCE BUNDLED)
+resolve_dependency(xsimd)
 
 add_subdirectory(src)
