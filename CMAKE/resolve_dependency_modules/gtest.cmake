@@ -13,19 +13,19 @@
 # limitations under the License.
 include_guard(GLOBAL)
 
-set(VELOX_XSIMD_VERSION 10.0.0)
-set(VELOX_XSIMD_BUILD_SHA256_CHECKSUM
-    73f818368b3a4dad92fab1b2933d93694241bd2365a6181747b2df1768f6afdd)
-set(VELOX_XSIMD_SOURCE_URL
-    "https://github.com/xtensor-stack/xsimd/archive/refs/tags/${VELOX_XSIMD_VERSION}.tar.gz"
+set(VELOX_GTEST_VERSION 1.13.0)
+set(VELOX_GTEST_BUILD_SHA256_CHECKSUM
+    ad7fdba11ea011c1d925b3289cf4af2c66a352e18d4c7264392fead75e919363)
+set(VELOX_GTEST_SOURCE_URL
+    "https://github.com/google/googletest/archive/refs/tags/v${VELOX_GTEST_VERSION}.tar.gz"
 )
 
-resolve_dependency_url(XSIMD)
+resolve_dependency_url(GTEST)
 
-message(STATUS "Building xsimd from source")
+message(STATUS "Building gtest from source")
 FetchContent_Declare(
-  xsimd
-  URL ${VELOX_XSIMD_SOURCE_URL}
-  URL_HASH ${VELOX_XSIMD_BUILD_SHA256_CHECKSUM})
+  gtest
+  URL ${VELOX_GTEST_SOURCE_URL}
+  URL_HASH ${VELOX_GTEST_BUILD_SHA256_CHECKSUM})
 
-FetchContent_MakeAvailable(xsimd)
+FetchContent_MakeAvailable(gtest)

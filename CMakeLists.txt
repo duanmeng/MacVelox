@@ -20,6 +20,31 @@ list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 list(PREPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 include(ResolveDependency)
 
+set_with_default(VELOX_DEPENDENCY_SOURCE_DEFAULT VELOX_DEPENDENCY_SOURCE AUTO)
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
+# Add all options below
+option(
+  VELOX_BUILD_TESTING
+  "Enable Velox tests. This will enable all other build options automatically."
+  ON)
+option(
+  VELOX_BUILD_MINIMAL
+  "Build a minimal set of components only. This will override other build options."
+  OFF)
+# option() always creates a BOOL variable so we have to use a normal cache
+# variable with STRING type for this option.
+#
+# * AUTO: Try SYSTEM first fall back to BUNDLED.
+# * SYSTEM: Use installed dependencies via find_package.
+# * BUNDLED: Build dependencies from source.
+set(VELOX_DEPENDENCY_SOURCE
+    ${VELOX_DEPENDENCY_SOURCE_DEFAULT}
+    CACHE
+      STRING
+      "Default source for all dependencies with source builds enabled: AUTO SYSTEM BUNDLED."
+)
+
 if("${TREAT_WARNINGS_AS_ERRORS}")
   set(KNOWN_WARNINGS "-Wno-nullability-completeness")
 
@@ -192,17 +217,63 @@ find_library(ZSTD zstd)
 find_package(ZLIB)
 find_library(SNAPPY snappy)
 
-find_package(folly CONFIG REQUIRED)
+set_source(gflags)
+resolve_dependency(gflags COMPONENTS shared)
+if(NOT TARGET gflags::gflags)
+  # This is a bit convoluted, but we want to be able to use gflags::gflags as a
+  # target even when velox is built as a subproject which uses
+  # `find_package(gflags)` which does not create a globally imported target that
+  # we can ALIAS.
+  add_library(gflags_gflags INTERFACE)
+  target_link_libraries(gflags_gflags INTERFACE gflags)
+  add_library(gflags::gflags ALIAS gflags_gflags)
+endif()
+
+if(${gflags_SOURCE} STREQUAL "BUNDLED")
+  # we force glog from source to avoid issues with a system version built
+  # against another gflags version (which is likely)
+  set(glog_SOURCE BUNDLED)
+else()
+  set(glog_SOURCE SYSTEM)
+endif()
+resolve_dependency(glog)
+
+set_source(fmt)
+resolve_dependency(fmt)
+
+# Locate or build folly.
+set_source(folly)
+resolve_dependency(folly)
+
+# If we use BUNDLED boost we need to set this manually AFTER folly is configured
+if(NOT DEFINED Boost_LIBRARIES)
+  set(Boost_LIBRARIES ${BOOST_INCLUDE_LIBRARIES})
+  list(TRANSFORM Boost_LIBRARIES PREPEND Boost::)
+endif()
+
 set(FOLLY_WITH_DEPENDENCIES
     ${FOLLY_LIBRARIES}
+    ${Boost_LIBRARIES}
     ${DOUBLE_CONVERSION}
-    Boost::context
-    dl
     ${EVENT}
     ${SNAPPY}
-    ${LZ4}
-    ${ZSTD}
-    ${ZLIB_LIBRARIES})
+    ${CMAKE_DL_LIBS}
+    ${FMT})
+
+if(DEFINED FOLLY_BENCHMARK_STATIC_LIB)
+  set(FOLLY_BENCHMARK ${FOLLY_BENCHMARK_STATIC_LIB})
+else()
+  set(FOLLY_BENCHMARK Folly::follybenchmark)
+endif()
+
+if(NOT ${VELOX_BUILD_MINIMAL})
+  find_package(BZip2 MODULE)
+  if(BZIP2_FOUND)
+    list(APPEND FOLLY_WITH_DEPENDENCIES ${BZIP2_LIBRARIES})
+  endif()
+endif()
+
+include_directories(SYSTEM ${FOLLY_INCLUDE_DIRS})
 
 find_package(BZip2 MODULE)
 if(BZIP2_FOUND)

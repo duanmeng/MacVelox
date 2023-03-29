@@ -13,19 +13,18 @@
 # limitations under the License.
 include_guard(GLOBAL)
 
-set(VELOX_XSIMD_VERSION 10.0.0)
-set(VELOX_XSIMD_BUILD_SHA256_CHECKSUM
-    73f818368b3a4dad92fab1b2933d93694241bd2365a6181747b2df1768f6afdd)
-set(VELOX_XSIMD_SOURCE_URL
-    "https://github.com/xtensor-stack/xsimd/archive/refs/tags/${VELOX_XSIMD_VERSION}.tar.gz"
-)
+set(VELOX_<PACKAGE>_VERSION x.y.z)
+# release artifacts are tough (except the auto generated ones)
+set(VELOX_<PACKAGE>_BUILD_SHA256_CHECKSUM 123)
+set(VELOX_<PACKAGE>_SOURCE_URL "") # ideally don't use github archive links as
+                                   # they are not guranteed to be hash stable
 
-resolve_dependency_url(XSIMD)
+resolve_dependency_url(<PACKAGE>)
 
-message(STATUS "Building xsimd from source")
+message(STATUS "Building <PACKAGE> from source")
 FetchContent_Declare(
-  xsimd
-  URL ${VELOX_XSIMD_SOURCE_URL}
-  URL_HASH ${VELOX_XSIMD_BUILD_SHA256_CHECKSUM})
+  <package>
+  URL ${VELOX_<PACKAGE>_SOURCE_URL}
+  URL_HASH ${VELOX_<PACKAGE>_BUILD_SHA256_CHECKSUM})
 
-FetchContent_MakeAvailable(xsimd)
+FetchContent_MakeAvailable(<package>)

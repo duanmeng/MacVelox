@@ -13,19 +13,22 @@
 # limitations under the License.
 include_guard(GLOBAL)
 
-set(VELOX_XSIMD_VERSION 10.0.0)
-set(VELOX_XSIMD_BUILD_SHA256_CHECKSUM
-    73f818368b3a4dad92fab1b2933d93694241bd2365a6181747b2df1768f6afdd)
-set(VELOX_XSIMD_SOURCE_URL
-    "https://github.com/xtensor-stack/xsimd/archive/refs/tags/${VELOX_XSIMD_VERSION}.tar.gz"
-)
+set(VELOX_FMT_VERSION 8.0.1)
+set(VELOX_FMT_BUILD_SHA256_CHECKSUM
+    b06ca3130158c625848f3fb7418f235155a4d389b2abc3a6245fb01cb0eb1e01)
+set(VELOX_FMT_SOURCE_URL
+    "https://github.com/fmtlib/fmt/archive/${VELOX_FMT_VERSION}.tar.gz")
 
-resolve_dependency_url(XSIMD)
+resolve_dependency_url(FMT)
 
-message(STATUS "Building xsimd from source")
+message(STATUS "Building fmt from source")
 FetchContent_Declare(
-  xsimd
-  URL ${VELOX_XSIMD_SOURCE_URL}
-  URL_HASH ${VELOX_XSIMD_BUILD_SHA256_CHECKSUM})
+  fmt
+  URL ${VELOX_FMT_SOURCE_URL}
+  URL_HASH ${VELOX_FMT_BUILD_SHA256_CHECKSUM})
 
-FetchContent_MakeAvailable(xsimd)
+# Force fmt to create fmt-config.cmake which can be found by other dependecies
+# (e.g. folly)
+set(FMT_INSTALL ON)
+set(fmt_BUILD_TESTS OFF)
+FetchContent_MakeAvailable(fmt)

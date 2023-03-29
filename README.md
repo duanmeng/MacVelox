@@ -55,7 +55,6 @@ I20230319 22:31:05.807991 3735465 HelloVelox.cpp:284] Number of instances of Opa
 ### Hello XSIMD
 ```Shell
 $ ./_build/release/src/example/mac_hello_xsimd
-(2, 3)
 Get simd size automatically.
 Get simd info of int8_t
 arch_type N5xsimd6neon64E
