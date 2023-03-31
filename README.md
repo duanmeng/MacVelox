@@ -15,6 +15,13 @@
 - bz2
 - xxhash
 
+**Install cmake-format and clang-format**
+
+*[You may need to try:](https://github.com/cheshirekow/cmake_format/issues/237)*
+- `pip3 uninstall cmake-format`
+- `pip3 install --upgrade --force-reinstall cmakelang`
+
+
 ## Build Notes
 
 - git clone --recursive git@github.com:duanmeng/MacVelox.git
