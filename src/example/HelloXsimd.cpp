@@ -18,6 +18,22 @@ void printSimdInfo() {
   std::cout << "simd_register " << simd_register << std::endl;
 }
 
+/// Is xsimd::default_arch extracted using traits during compilation time?
+/// Can we prove it through get type info during compilation.
+/// Using the following codes and get compilation error to get the type info,
+/// "error: implicit instantiation of undefined template '(anonymous
+/// namespace)::WhichType<xsimd::neon64>'"
+///
+/// template <typename...> struct WhichType;
+/// template<typename Arch = xsimd::default_arch>
+/// void foo() {
+///  WhichType<xsimd::default_arch>{};
+/// }
+
+template <typename Arch = xsimd::default_arch>
+void getArch() {
+  std::cout << "arch_type is " << typeid(Arch).name() << std::endl;
+}
 }
 
 int main(int argc, char* argv[]) {
@@ -34,6 +50,7 @@ int main(int argc, char* argv[]) {
   printSimdInfo<double>();
   // type 'simd_type<bool>' (aka 'bool') cannot be used prior to '::' because it has no members
   // printSimdInfo<bool>();
+  getArch();
 
   return 0;
 }
